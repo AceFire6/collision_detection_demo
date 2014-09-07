@@ -63,7 +63,7 @@ public class Player extends Entity {
 
 
                 for (int y = 1; y < (y_end - y_start) + 1; y++) {
-                    for (int x = 0; x < (x_end - x_start) + 1; x++) {
+                    for (int x = 0; x < (x_end - x_start); x++) {
                         if (playerMask[y].get(x) && entityMask[y].get(x)) {
                             System.out.println(x + " " + y);
                             collision = true;
