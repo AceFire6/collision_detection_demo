@@ -36,7 +36,7 @@ public class Player extends Entity {
         collisionDetection(getX(), getY() + deltaY);
     }
 
-    public boolean borderCollisionX(float newX) {
+    public boolean worldBorderCollisionX(float newX) {
         int tileSize = game.tileSize;
 
         if (newX < tileSize) {
@@ -49,7 +49,7 @@ public class Player extends Entity {
         return false;
     }
 
-    public boolean borderCollisionY(float newY) {
+    public boolean worldBorderCollisionY(float newY) {
         int tileSize = game.tileSize;
         if (newY < tileSize) {
             setY(tileSize);
@@ -63,10 +63,10 @@ public class Player extends Entity {
 
     private void collisionDetection(float newX, float newY) {
         boolean collision = false;
-        if (borderCollisionX(newX)) {
+        if (worldBorderCollisionX(newX)) {
             return;
         }
-        if (borderCollisionY(newY)) {
+        if (worldBorderCollisionY(newY)) {
             return;
         }
 
