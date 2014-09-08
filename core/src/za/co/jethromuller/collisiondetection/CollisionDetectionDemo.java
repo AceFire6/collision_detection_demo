@@ -10,9 +10,8 @@ import java.util.ArrayList;
 
 public class CollisionDetectionDemo extends ApplicationAdapter {
 	private SpriteBatch batch;
-    private Player player;
 
-    private int[][] map = {
+    protected int[][] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -29,9 +28,9 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     };
-    private int tileSize = 20;
-    private int mapWidth = map[0].length * tileSize;
-    private int mapHeight = map.length * tileSize;
+    protected int tileSize = 20;
+    protected int mapWidth = map[0].length * tileSize;
+    protected int mapHeight = map.length * tileSize;
 
     private Texture obstacleTexture;
     private Texture groundTexture;
@@ -41,16 +40,17 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-        player = new Player(this, 40, 60, "player.png");
+        Player player = new Player(this, 40, 60, "player.png");
 
         obstacleTexture = new Texture("block.png");
         groundTexture = new Texture("ground.jpg");
 
-        entities = new ArrayList<Entity>();
+        entities = new ArrayList<>();
         entities.add(player);
         entities.add(new Entity(this, 50, 150, "enemy.png"));
         entities.add(new Entity(this, 200, 200, "enemy.png"));
         entities.add(new Entity(this, 180, 50, "enemy.png"));
+        getInnerObstacles();
 	}
 
 	@Override
@@ -64,12 +64,28 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
         batch.end();
 	}
 
-    public void drawEntities() {
-        float timeDelta = Gdx.graphics.getDeltaTime();
-        for (Entity entity : entities) {
-            if (entity instanceof Player) {
-                entity.update(timeDelta);
+    private void getInnerObstacles() {
+        int x_pos;
+        int y_pos = mapHeight;
+        for (int[] ints : map) {
+            x_pos = mapWidth;
+            y_pos -= tileSize;
+            for (int i = 0; i < ints.length; i++) {
+                x_pos -= tileSize;
+                if (ints[i] == 1) {
+                    if ((x_pos < mapWidth - tileSize) && (x_pos > tileSize) &&
+                        (y_pos < (mapHeight - (2 * tileSize))) && (y_pos > (2 * tileSize))) {
+                        entities.add(new Entity(this, x_pos, y_pos, "block.png"));
+                        ints[i] = 0;
+                    }
+                }
             }
+        }
+    }
+
+    public void drawEntities() {
+        for (Entity entity : entities) {
+            entity.update();
             batch.draw(entity.getTexture(), entity.getX(), entity.getY());
         }
     }
