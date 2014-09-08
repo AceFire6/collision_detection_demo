@@ -2,15 +2,20 @@ package za.co.jethromuller.collisiondetection;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 
 public class CollisionDetectionDemo extends ApplicationAdapter {
 	private SpriteBatch batch;
-
+    private Camera camera;
+    private Viewport viewport;
     protected int[][] map = {
             {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -40,6 +45,10 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(mapWidth, mapHeight, camera);
+        viewport.apply(true);
+
         Player player = new Player(this, 40, 60, "player.png");
 
         obstacleTexture = new Texture("block.png");
@@ -55,6 +64,8 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
 
 	@Override
 	public void render () {
+        batch.setProjectionMatrix(camera.projection);
+        batch.setTransformMatrix(camera.view);
         //Drawing
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
