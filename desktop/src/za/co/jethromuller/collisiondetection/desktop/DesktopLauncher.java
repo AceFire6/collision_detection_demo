@@ -9,7 +9,8 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.resizable = false;
         config.title = "Pixel Perfect Collision Detection Demo - Assignment 3";
-        config.width = 500;
+        config.width = 600;
+        config.height = 600;
 		new LwjglApplication(new CollisionDetectionDemo(), config);
 	}
 }

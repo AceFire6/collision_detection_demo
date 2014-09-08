@@ -70,7 +70,7 @@ public class Player extends Entity {
             return;
         }
 
-        for (Entity entity : game.getEntities()) {
+        for (Entity entity : game.getEntities(this)) {
             if (entity.equals(this)) {
                 continue;
             }
