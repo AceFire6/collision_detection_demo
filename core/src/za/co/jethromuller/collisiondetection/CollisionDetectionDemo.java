@@ -27,7 +27,7 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-            {1,0,1,1,0,0,0,0,0,0,0,0,0,0,1},
+            {1,0,0,1,1,1,0,0,1,1,1,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
             {1,0,0,0,0,1,1,0,0,0,0,0,0,0,1},
@@ -191,7 +191,13 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
             entity.update();
             batch.draw(entity.getTexture(), entity.getX(), entity.getY());
             if (drawBounds) {
-                shapeRenderer.rect(entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight());
+                if (entity instanceof Player &&  ((Player) entity).useCircle()) {
+                    float circleRadius = ((Player) entity).circleBounds.radius;
+                    shapeRenderer.circle(
+                            entity.getX() + circleRadius, entity.getY() + circleRadius, ((Player) entity).getRadius());
+                } else {
+                    shapeRenderer.rect(entity.getX(), entity.getY(), entity.getWidth(), entity.getHeight());
+                }
             }
         }
     }

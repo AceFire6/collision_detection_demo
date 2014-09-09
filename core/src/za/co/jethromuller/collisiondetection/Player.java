@@ -2,6 +2,8 @@ package za.co.jethromuller.collisiondetection;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
 
 import java.util.BitSet;
 
@@ -11,6 +13,9 @@ import java.util.BitSet;
 public class Player extends Entity {
 
     private int speed;
+    private float radius;
+    private boolean useCircle;
+    protected Circle circleBounds;
 
     /**
      * Creates a player object with the given parameters.
@@ -22,6 +27,10 @@ public class Player extends Entity {
     public Player(CollisionDetectionDemo game, int x, int y, String fileName) {
         super(game, x, y, fileName);
         speed = 2;
+        radius = getWidth() / 2;
+        circleBounds = new Circle();
+        circleBounds.set(x, y, radius);
+        useCircle = false;
     }
 
     /**
@@ -31,6 +40,10 @@ public class Player extends Entity {
     public void update() {
         float deltaX = 0;
         float deltaY = 0;
+
+        if (Gdx.input.isKeyJustPressed(Keys.SHIFT_LEFT)) {
+            useCircle = !useCircle;
+        }
 
         if(Gdx.input.isKeyPressed(Keys.UP)) {
             deltaY = speed;
@@ -57,12 +70,17 @@ public class Player extends Entity {
      */
     public boolean worldBorderCollisionX(float newX) {
         int tileSize = game.tileSize;
+        int x_val;
 
-        if (newX < tileSize) {
-            setX(tileSize);
+        if (newX < tileSize - 2) {
+            x_val = tileSize - 2;
+            setX(x_val);
+            circleBounds.setPosition(x_val + circleBounds.radius, circleBounds.y + circleBounds.radius);
             return true;
-        } else if (newX > tileSize * (game.map[0].length - 2) - 5) {
-            setX(tileSize * (game.map[0].length - 2) - 5);
+        } else if (newX > tileSize * (game.map[0].length - 2) - 3) {
+            x_val = tileSize * (game.map[0].length - 2) - 3;
+            setX(x_val);
+            circleBounds.setPosition(x_val + circleBounds.radius, circleBounds.y + circleBounds.radius);
             return true;
         }
         return false;
@@ -76,11 +94,16 @@ public class Player extends Entity {
      */
     public boolean worldBorderCollisionY(float newY) {
         int tileSize = game.tileSize;
-        if (newY < tileSize) {
-            setY(tileSize);
+        int y_val;
+        if (newY < tileSize - 2) {
+            y_val = tileSize - 2;
+            setY(y_val);
+            circleBounds.setPosition(circleBounds.x + circleBounds.radius, y_val + circleBounds.radius);
             return true;
-        } else if (newY > tileSize * (game.map.length - 2) - 5) {
-            setY(tileSize * (game.map.length - 2) - 5);
+        } else if (newY > tileSize * (game.map.length - 2) - 3) {
+            y_val = tileSize * (game.map.length - 2) - 3;
+            setY(y_val);
+            circleBounds.setPosition(circleBounds.x + circleBounds.radius, y_val + circleBounds.radius);
             return true;
         }
         return false;
@@ -105,7 +128,12 @@ public class Player extends Entity {
                 continue;
             }
 
-            if (this.getBoundingRectangle().overlaps(entity.getBoundingRectangle())) {
+            if (((useCircle) ?
+                 Intersector.overlaps(circleBounds, entity.getBoundingRectangle()) :
+                 getBoundingRectangle().overlaps(entity.getBoundingRectangle()))) {
+                System.out.println("Rectangle Intersection: " + getBoundingRectangle().overlaps(entity.getBoundingRectangle()));
+                System.out.println("Circle Intersection: " + Intersector.overlaps(circleBounds, entity.getBoundingRectangle()));
+
                 int x_start = (int) Math.max(newX, entity.getX());
                 int y_start = ((int) Math.max(newY, entity.getY()));
 
@@ -113,7 +141,6 @@ public class Player extends Entity {
                                             entity.getX() + entity.getWidth()));
                 int y_end = ((int) Math.min(newY + this.getHeight(),
                                             entity.getY() + entity.getHeight()));
-
 
                 for (int y = 1; y < Math.abs(y_end - y_start); y++) {
                     int y_test1 = Math.abs(((int) (y_start - newY))) + y;
@@ -136,6 +163,15 @@ public class Player extends Entity {
 
         if (!collision) {
             setPosition(newX, newY);
+            circleBounds.setPosition(newX + circleBounds.radius, newY + circleBounds.radius);
         }
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    public boolean useCircle() {
+        return useCircle;
     }
 }
