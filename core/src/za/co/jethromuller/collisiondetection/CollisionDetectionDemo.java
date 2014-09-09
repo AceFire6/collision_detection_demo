@@ -14,6 +14,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
 
+/**
+ * Main class that handles all the rendering and map and entitys.
+ */
 public class CollisionDetectionDemo extends ApplicationAdapter {
 	private SpriteBatch batch;
     protected int[][] map = {
@@ -40,7 +43,16 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
     private Texture obstacleTexture;
     private Texture groundTexture;
 
+
+    /**
+     * Grid of the various map positions with each
+     * grid square holding the entities that intersect the
+     * square's coordinates.
+     */
     private ArrayList<Entity>[][] mapGrid;
+    /**
+     * All the Entities
+     */
     private ArrayList<Entity> entities;
     private int cellSize;
 
@@ -84,6 +96,11 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
         getInnerObstacles();
     }
 
+    /**
+     * Adds an entity to the entities list and the
+     * mapGrid in the correct cells.
+     * @param entity The entity to be added.
+     */
     public void addEntity(Entity entity) {
         entities.add(entity);
         int topLeftX = ((int) (entity.getX() / cellSize));
@@ -99,6 +116,12 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
         }
     }
 
+    /**
+     * Returns an ArrayList of the entities in the grid cells
+     * that are intersected by the entity given as a parameter.
+     * @param entity    The entity that will cause collisions.
+     * @return  ArrayList of entities that could be colided with.
+     */
     public ArrayList<Entity> getEntities(Entity entity) {
         ArrayList<Entity> possibleEntities = new ArrayList<>();
         int topLeftX = ((int) (entity.getX() / cellSize));
@@ -123,6 +146,7 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
+        // Draws the bounding boxes if the spacebar is pressed.
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(0, 1, 1, 1);
@@ -137,6 +161,9 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
         batch.end();
 	}
 
+    /**
+     * Gets and adds the obstacles in the map that aren't on the edges of the map.
+     */
     private void getInnerObstacles() {
         int x_pos;
         int y_pos = mapHeight;
@@ -155,6 +182,10 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
         }
     }
 
+    /**
+     * Draws all the entities.
+     * @param drawBounds    boolean indicating hether or not to draw the bounding boxes.
+     */
     public void drawEntities(boolean drawBounds) {
         for (Entity entity : entities) {
             entity.update();
@@ -165,6 +196,10 @@ public class CollisionDetectionDemo extends ApplicationAdapter {
         }
     }
 
+    /**
+     * Draws the map based on the map's low resolution bitmap.
+     * @param drawBounds    boolean indicating whether or not to draw the bounds.
+     */
     public void drawMap(boolean drawBounds) {
         int x_pos;
         int y_pos = mapHeight;

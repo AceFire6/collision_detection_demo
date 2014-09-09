@@ -5,15 +5,28 @@ import com.badlogic.gdx.Input.Keys;
 
 import java.util.BitSet;
 
+/**
+ * The player class is the entity that the player controls.
+ */
 public class Player extends Entity {
 
     private int speed;
 
+    /**
+     * Creates a player object with the given parameters.
+     * @param game        The game that created this entity.
+     * @param x           The x coordinate of the player entity.
+     * @param y           The y coordinate of the player entity.
+     * @param fileName    The filename of the texture for this entity.
+     */
     public Player(CollisionDetectionDemo game, int x, int y, String fileName) {
         super(game, x, y, fileName);
         speed = 2;
     }
 
+    /**
+     * Handles player movement and calls collision detection.
+     */
     @Override
     public void update() {
         float deltaX = 0;
@@ -36,6 +49,12 @@ public class Player extends Entity {
         collisionDetection(getX(), getY() + deltaY);
     }
 
+    /**
+     * Checks to see if, given the new X value, the player will intersect
+     * the game's borders.
+     * @param newX    The new x coordinate of the player.
+     * @return  boolean indicating whether or not a collision occurs.
+     */
     public boolean worldBorderCollisionX(float newX) {
         int tileSize = game.tileSize;
 
@@ -49,6 +68,12 @@ public class Player extends Entity {
         return false;
     }
 
+    /**
+     * Checks to see if, given the new Y value, the player will intersect
+     * the game's borders.
+     * @param newY    The new y coordinate of the player.
+     * @return  boolean indicating whether or not a collision occurs.
+     */
     public boolean worldBorderCollisionY(float newY) {
         int tileSize = game.tileSize;
         if (newY < tileSize) {
@@ -61,6 +86,11 @@ public class Player extends Entity {
         return false;
     }
 
+    /**
+     * Performs all collision tests given the new X and Y coordinates of the player.
+     * @param newX    New x coordinate of the player.
+     * @param newY    New y coordinate of the player.
+     */
     private void collisionDetection(float newX, float newY) {
         boolean collision = false;
         if (worldBorderCollisionX(newX)) {
